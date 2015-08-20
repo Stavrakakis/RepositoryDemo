@@ -1,16 +1,18 @@
 namespace DAL
 {
+    using DAL.Database;
     using System;
     using System.Data.Common;
     using System.Data.Entity;
+    using System.Data.Entity.ModelConfiguration;
     using System.Linq;
     using System.Linq.Expressions;
-
+    
     public class DataContext : DbContext
     {
         public DataContext()
-        { 
-
+        {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         // Your context has been configured to use a 'DataContext' connection string from your application's 
@@ -27,23 +29,14 @@ namespace DAL
         // Add a DbSet for each entity type that you want to include in your model. For more information 
         // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
 
-        public virtual DbSet<User> Users { get; set; }
-    }
+        public virtual DbSet<UserDto> Users { get; set; }
 
-    public class User
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Age { get; set; }
-
-        public static Expression<Func<User, bool>> NameBeginsWith(string prefix) 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            return u => u.Name.StartsWith(prefix);
-        }
+            base.OnModelCreating(modelBuilder);
 
-        public static Expression<Func<User, bool>> AgeBetween(int min, int max)
-        {
-            return u => (min <= u.Age) && (u.Age <= max);
+            modelBuilder.Configurations.Add(new UserDtoConfigution());
+            modelBuilder.Configurations.Add(new AddressDtoConfiguration());
         }
     }
 }

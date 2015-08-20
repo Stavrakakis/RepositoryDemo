@@ -8,6 +8,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.UnitOfWork;
+using DAL.Services;
+using DAL.Database;
+using DAL.Domain;
+using DAL.Criteria;
 
 namespace DAL
 {
@@ -17,8 +22,17 @@ namespace DAL
         {
 
             var builder = new ContainerBuilder();
-            
+
+            AutoMapper.Mapper.CreateMap<User, UserDto>()
+                .ForMember(u => u.AgeInYears, c => c.MapFrom(dto => dto.Age))
+                .ForMember(u => u.Name, c => c.MapFrom(dto => dto.FirstName)); 
+
+            AutoMapper.Mapper.CreateMap<UserDto, User>();
+
             builder.RegisterType<UnitOfWorkFactory>().As<IUnitOfWorkFactory>();
+            builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterGeneric(typeof(GenericRepository<,>)).As(typeof(IRepository<>));
+
             builder.RegisterType<App>().As<App>();
 
             var container = builder.Build();
@@ -35,32 +49,23 @@ namespace DAL
     public class App 
     {
         private readonly IUnitOfWorkFactory unitOfWorkFactory;
+        private readonly IUserService userService;
 
-        public App(IUnitOfWorkFactory factory) 
+        public App(IUnitOfWorkFactory factory, IUserService userService) 
         {
             this.unitOfWorkFactory = factory;
+            this.userService = userService;
         }
 
-        public void Run() 
+        public void Run()
         {
             using (var session = this.unitOfWorkFactory.Create())
             {
-                var repo = session.UserRepository;
+                var criteria = new UserCriteria().ById(1).ById(2);
 
-                repo.Insert(new User { Id = 1, Name = "Nico", Age = 29 });
-                repo.Insert(new User { Id = 2, Name = "Bob", Age = 33 });
-                repo.Insert(new User { Id = 2, Name = "Brian", Age = 45 });
-
-                session.Save();
-
-                var nameBeginsWithB = User.NameBeginsWith("B");
-                var inTheirTwenties = User.AgeBetween(20, 29);
-                var inTheirFourties = User.AgeBetween(40, 49);
-
-                var query = Filter.And(nameBeginsWithB, Filter.Or(inTheirTwenties, inTheirFourties));
-
-                var entities = repo.GetAll(query);
+                var british = this.userService.GetUsers(criteria);
             }
+
         }
     }
 }
