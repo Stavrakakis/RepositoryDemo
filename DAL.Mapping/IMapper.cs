@@ -2,6 +2,6 @@
 {
     public interface IMapper
     {
-        TResult Map<TSource, TResult>(TSource source) where TResult : new();
+        TResult Map<TSource, TResult>(TSource source);
     }
 }

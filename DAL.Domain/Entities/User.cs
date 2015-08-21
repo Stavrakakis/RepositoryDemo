@@ -6,7 +6,7 @@
         private readonly string firstname;
         private readonly string surname;
         private readonly int age;
-        private readonly Address address;
+        //private readonly Address address;
 
         public User() { }
 
@@ -16,7 +16,7 @@
             this.firstname = firstName;
             this.surname = surname;
             this.age = age;
-            this.address = new Address();
+            //this.address = new Address(0, "", "");
         }
 
         public int Id { get { return this.id; } }
@@ -27,6 +27,6 @@
 
         public int Age { get { return this.age; } }
 
-        public Address Address { get { return this.address; } }
+        //public Address Address { get { return this.address; } }
     }
 }

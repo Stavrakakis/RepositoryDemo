@@ -17,18 +17,12 @@
 
         public void Run()
         {
-            using (var session = this.unitOfWorkFactory.Create())
-            {
-                // Allow criteria approach where builder pattern is used
-                // by service consumers to choose their data
-                var criteria = new UserCriteria().ById(1).ById(2);
-                var users = this.userService.GetUsers(criteria);
+            // Allow criteria approach where builder pattern is used
+            // by service consumers to choose their data
+            var criteria = new UserCriteria().ById(1).ById(2);
+            var users = this.userService.GetUsers(criteria);
 
-
-                // Have service expose specific methods for retrieval
-
-            }
-
+            // Have service expose specific methods for retrieval
         }
     }
 }

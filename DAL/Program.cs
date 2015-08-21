@@ -16,12 +16,6 @@
         {
             var builder = new ContainerBuilder();
 
-            AutoMapper.Mapper.CreateMap<User, UserDto>()
-                .ForMember(u => u.AgeInYears, c => c.MapFrom(dto => dto.Age))
-                .ForMember(u => u.Name, c => c.MapFrom(dto => dto.FirstName)); 
-
-            AutoMapper.Mapper.CreateMap<UserDto, User>();
-
             builder.RegisterType<UnitOfWorkFactory>().As<IUnitOfWorkFactory>();
             builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<Mapper>().As<IMapper>();
@@ -30,6 +24,21 @@
             builder.RegisterType<App>().As<App>();
 
             var container = builder.Build();
+
+            AutoMapper.Mapper.Initialize(cfg => {
+
+                cfg.CreateMap<User, UserDto>()
+                    .ForMember(u => u.AgeInYears, c => c.MapFrom(dto => dto.Age))
+                    .ForMember(u => u.Name, c => c.MapFrom(dto => dto.FirstName))
+                    .ForMember(u => u.Id, c => c.MapFrom(dto => dto.Id));
+                
+                cfg.CreateMap<UserDto, User>()
+                .ForMember(u => u.Age, c => c.MapFrom(dto => dto.AgeInYears))
+                .ForMember(u => u.Id, c => c.MapFrom(dto => dto.Id));
+                
+            });
+
+            AutoMapper.Mapper.AssertConfigurationIsValid();
 
             using (var scope = container.BeginLifetimeScope())
             {

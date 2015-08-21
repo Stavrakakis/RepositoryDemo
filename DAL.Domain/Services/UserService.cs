@@ -42,7 +42,7 @@
 
                 Expression<Func<User, bool>> nameStartsWithN = u => u.FirstName.Contains("N");                
                 
-                var users = session.UserRepository.GetAll(filter).ToList();
+                var users = session.UserRepository.GetAll(expr).ToList();
                 
                 return users;
             } 

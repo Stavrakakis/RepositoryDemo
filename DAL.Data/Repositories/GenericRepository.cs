@@ -1,5 +1,6 @@
 ﻿namespace DAL.Data.Repositories
 {
+    using Database.Dtos;
     using DAL.Domain.Repositories;
     using Mapping;
     using System;
@@ -8,7 +9,7 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public class GenericRepository<TModel, TEntity> : IRepository<TEntity> where TEntity : class, new() where TModel : class, new()
+    public class GenericRepository<TModel, TEntity> : IRepository<TEntity> where TEntity : class where TModel : class, IMapTo<TEntity>
     {
         private DbContext context;
         private DbSet<TModel> dbSet;
@@ -24,6 +25,7 @@
         public void Insert(TEntity entity) 
         {
             var model = this.mapper.Map<TEntity, TModel>(entity);
+
             dbSet.Add(model);
         }
 
@@ -35,7 +37,9 @@
 
             queryable = filter == null ? queryable : queryable.Where(dtoFilter);
 
-            return queryable.ToList().Select(u => this.mapper.Map<TModel, TEntity>(u));
+            var dtos = queryable.ToList();
+            
+            return queryable.ToList().Select(u => u.Map());
         }
     }
 }

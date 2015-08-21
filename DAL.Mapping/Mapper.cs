@@ -2,9 +2,14 @@
 {
     public class Mapper : IMapper
     {
-        public TResult Map<TSource, TResult>(TSource source) where TResult : new()
+        public TResult Map<TSource, TResult>(TSource source)
         {
-            return AutoMapper.Mapper.Map<TSource, TResult>(source);
+            var maps = AutoMapper.Mapper.GetAllTypeMaps();
+
+            var s = typeof(TSource);
+            var d = typeof(TResult);
+
+            return AutoMapper.Mapper.Map<TResult>(source);
         }
     }
 }
