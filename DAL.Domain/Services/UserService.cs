@@ -31,18 +31,23 @@
         public IEnumerable<User> GetUsers(UserCriteria criteria, int pageNumber = 1, int pageSize = 10)
         {
             using (var session = this.sessionFactory.Create())
-            {                   
+            {
+                session.UserRepository.Insert(new User("Nico", "Stavrakakis", 29, new Address("Street", "UK")));
+                session.Save();
+
                 Expression<Func<User, bool>> userIdFilter = u => u.Id != 2;
 
-                var expr = this.OlderThan(28);                
-                
-                var idInList = this.ContainsValue<User, int>(criteria.Ids.ToList(), u => u.Id);
+                //var expr = this.OlderThan(28);                
 
-                var filter = PredicateBuilder.Or(idInList, expr);
+                //var idInList = this.ContainsValue<User, int>(criteria.Ids.ToList(), u => u.Id);
 
-                Expression<Func<User, bool>> nameStartsWithN = u => u.FirstName.Contains("N");                
-                
-                var users = session.UserRepository.GetAll(expr).ToList();
+                //var filter = PredicateBuilder.Or(idInList, expr);
+
+                //Expression<Func<User, bool>> nameStartsWithN = u => u.FirstName.Contains("N");                
+
+                Expression<Func<User, bool>> ukFilter = u => u.Address.Country == "UKS";
+
+                var users = session.UserRepository.GetAll(ukFilter).ToList();
                 
                 return users;
             } 

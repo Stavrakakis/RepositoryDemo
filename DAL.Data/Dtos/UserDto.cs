@@ -2,7 +2,6 @@
 {
     using Domain.Entities;
     using System.Data.Entity.ModelConfiguration;
-    using System;
 
     public class UserDtoConfigution : EntityTypeConfiguration<UserDto>
     {
@@ -10,7 +9,7 @@
         {
             this.ToTable("Users");
             this.HasKey(u => u.Id);
-            //this.HasRequired(u => u.Address);
+            this.HasRequired(u => u.Address);
         }
     }
 
@@ -21,6 +20,8 @@
         public string Name { get; set; }
 
         public int AgeInYears { get; set; }
+
+        public AddressDto Address { get; set; }
 
         public User Map()
         {

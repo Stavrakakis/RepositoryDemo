@@ -30,12 +30,14 @@
                 cfg.CreateMap<User, UserDto>()
                     .ForMember(u => u.AgeInYears, c => c.MapFrom(dto => dto.Age))
                     .ForMember(u => u.Name, c => c.MapFrom(dto => dto.FirstName))
+                    .ForMember(u => u.Address, c => c.MapFrom(dto => dto.Address))
                     .ForMember(u => u.Id, c => c.MapFrom(dto => dto.Id));
-                
-                cfg.CreateMap<UserDto, User>()
-                .ForMember(u => u.Age, c => c.MapFrom(dto => dto.AgeInYears))
-                .ForMember(u => u.Id, c => c.MapFrom(dto => dto.Id));
-                
+
+                cfg.CreateMap<Address, AddressDto>()
+                    .ForMember(a => a.Country, c => c.MapFrom(dto => dto.Country))
+                    .ForMember(a => a.Street, c => c.MapFrom(dto => dto.Street))
+                    .ForMember(a => a.Id, c => c.MapFrom(dto => dto.Id))
+                    .ForMember(a => a.Users, c => c.Ignore());
             });
 
             AutoMapper.Mapper.AssertConfigurationIsValid();

@@ -72,7 +72,7 @@
                         var newNode = ConvertNode<TFrom, TTo>(me.Expression, subst);
 
                         MemberInfo info = null;
-                        var map = AutoMapper.Mapper.FindTypeMapFor(typeof(TFrom), typeof(TTo));
+                        var map = AutoMapper.Mapper.FindTypeMapFor(me.Expression.Type, newNode.Type);
                         var propertyMaps = map.GetPropertyMaps();
                         foreach (var property in propertyMaps)
                         {
